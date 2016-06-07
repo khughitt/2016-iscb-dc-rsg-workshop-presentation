@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>V. Keith Hughitt - Co-expression network analysis using RNA-Seq data</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      p, li { color: #333333; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+        color: #333333;
+      }
+      img { max-width: 100%; }
+      li { margin: 10px 0; }
+      a, a:visited {color: #096499; text-decoration: none;}
+      .blue { font-weight: 700; color: #096499; }
+      .red { font-weight: 700; color: #B2121A; }
+      .smaller { font-size: 18px; }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .title-slide > h1, .title-slide > h2, .title-slide > h3 {
+        text-shadow: -2px 2px 3px #666;
+        color: white;
+      }
+      .title-slide > h4, .title-slide > h5 {
+        color: white;
+      }
+      .remark-slide-content {
+          background-color: #F9F9FC;
+      }
+      .spaced-cols td,th {
+          padding: 0 5px;
+      }
+
+      /* tables */
+      td:first-child {
+          font-weight: 700;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        float: left;
+        width: 47%;
+      }
+      .right-column {
+        width: 47%;
+        float: right;
+      }
+      .vcenter {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
+    <script type='text/javascript'>
+        remark.macros.scale = function (percentage) {
+            var url = this;
+            return '<img src="' + url + '" style="width: ' + percentage + '" />';
+        };
+        remark.macros.vmargin = function (px) {
+            var url = this;
+            return '<img src="' + url + '" style="margin: ' + px + 'px 0px;" />';
+        };
+        var slideshow = remark.create({
+            sourceUrl: 'slides.md',
+            countIncrementalSlides: false
+        });
+
+        // Setup MathJax
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        });
+        MathJax.Hub.Queue(function() {
+            $(MathJax.Hub.getAllJax()).map(function(index, elem) {
+                return(elem.SourceElement());
+            }).parent().addClass('has-jax');
+        });
+        MathJax.Hub.Configured();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+convert example-network-directed.png -trim example-network-directed-trimmed.png
+convert example-network-directed-trimmed.png -gravity south -background none -splice 0x15 example-network-directed-trimmed-b.png
+convert example-network-directed-trimmed.png -trim -gravity south -background none -splice 0x15 -background none example-network-directed-trimmed.png
+inkscape --verb=FitCanvasToDrawing --verb=FileSave --verb=FileClose example-network-directed.svg
