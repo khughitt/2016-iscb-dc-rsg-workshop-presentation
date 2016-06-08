@@ -50,12 +50,16 @@ years:
 ### Protein-protein Interaction Network (PPI)
 <br /><br /><br />
 
-
 .center[![PPI](image/network-ppi-small.png)]
 
 ???
-- Nodes and Edges
+- Graphs/networks (useful link: https://shapeofdata.wordpress.com/2013/08/13/graphs-and-networks/)
+- Vertices and Edges (nodes and links)
 - Directed vs. Undirected.
+- Weighted vs. Unweighted
+- For our purposes: interested in representing relationship between numerous
+  (molecules) in a cell, both in general, and across specific conditions,
+  tissues, etc.
 
 ---
 # Types of Biological Networks
@@ -67,7 +71,7 @@ years:
 <br /><br /><br />
 
 
-.center[![PPI](image/network-coex-small.png)]
+.center[![co-expression network](image/network-coex-small.png)]
 
 ---
 # Types of Biological Networks
@@ -79,7 +83,7 @@ years:
 <br /><br /><br />
 
 
-.center[![PPI](image/network-grn-small.png)]
+.center[![GRN](image/network-grn-small.png)]
 
 ---
 # Types of Biological Networks
@@ -91,7 +95,7 @@ years:
 <br /><br /><br />
 
 
-.center[![PPI](image/network-trn-small.png)]
+.center[![TRN](image/network-trn-small.png)]
 
 ---
 # Types of Biological Networks
@@ -107,7 +111,7 @@ years:
 
 
 ---
-# Network representations
+# Network representation (directed)
 
 ```r
 set.seed(1)
@@ -122,6 +126,8 @@ diag(adj) <- 0
 <br />
 
 .left-column.vcenter[
+
+### Adjacency Matrix
 
 |   | V1| V2| V3| V4| V5|
 |:--|--:|--:|--:|--:|--:|
@@ -142,14 +148,84 @@ diag(adj) <- 0
 Plotting: 
 
 ```r
+# generating the figure
 library(igraph)
 svg(file='example-network-directed.svg', bg='transparent')
 plot(g)
 dev.off()
 
+# inkscape command-line command used to crop whitespace:
+# inkscape --verb=FitCanvasToDrawing --verb=FileSave --verb=FileClose example-network.svg
+
 # for separate edges in each direction
 #plot(g, edge.curved=rep(0.5, ecount(g)))
 ```
+
+---
+# Network representation (undirected)
+
+```r
+# convert to undirected network
+adj[upper.tri(adj)] <- 0
+
+# plotting with igraph
+g <- graph.adjacency(adj, mode='undirected')
+
+plot(g)
+```
+
+<br />
+
+.left-column.vcenter[
+
+### Adjacency Matrix
+
+|   | V1| V2| V3| V4| V5|
+|:--|--:|--:|--:|--:|--:|
+|V1 |  0|  0|  0|  0|  0|
+|V2 |  0|  0|  0|  0|  0|
+|V3 |  1|  1|  0|  0|  0|
+|V4 |  1|  1|  0|  0|  0|
+|V5 |  0|  0|  1|  1|  0|
+
+]
+
+.right-column.vcenter[
+![:vmargin -50](image/example-network-undirected-trimmed.svg)
+]
+
+---
+# Network representation (weighted)
+
+```r
+# create a weight adjacency matrix
+adj <- matrix(rnorm(25, mean=3.5, sd=5), nrow=5)
+adj[upper.tri(adj, diag=TRUE)] <- 0
+
+# note that igraph ignores edges with negative weights
+g <- graph.adjacency(adj, mode='undirected', weighted=TRUE)
+plot(g, edge.width=E(g)$weight)
+```
+
+<br />
+
+.left-column.vcenter[
+
+### Adjacency Matrix
+
+|   |    V1|   V2|    V3|    V4|    V5|
+|:--|-----:|----:|-----:|-----:|-----:|
+|V1 | -6.32| 7.25|  2.94| -5.36| -0.83|
+|V2 |  2.68| 1.97|  5.66|  0.61| -1.36|
+|V3 |  4.67| 3.77| -5.32| -1.57|  4.84|
+|V4 |  8.80| 0.97|  1.13|  0.70|  8.40|
+|V5 |  8.91| 6.24|  4.07| -2.61| 11.60|
+
+]
+
+.right-column.vcenter[
+![:vmargin -50](image/example-network-undirected-weighted-trimmed.svg)
+]
 
 ---
 class: center, middle
