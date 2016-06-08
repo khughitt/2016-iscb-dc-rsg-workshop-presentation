@@ -8,6 +8,7 @@ background-image: url(image/intro_background.png)
 ##### June 15, 2016
 
 ---
+class: smaller
 
 # Outline
 
@@ -18,26 +19,41 @@ background-image: url(image/intro_background.png)
 - Types of biological networks
 
 --
-- Methods for co-expression network construction
+- Motivation for using co-expression networks
 
 --
-- Considerations for using RNA-Seq data
+- Approaches for co-expression network inference
 
 --
-- Co-expression network construction
+- Basic graph terminology and data structures
 
 --
-- Co-expression network annotation
+- Steps for building a co-expression network
 
 --
-- Data used for today's presentation
+- Dataset for today's workshop
+
+
 --
-
-
 **2. Tutorial**
+
 --
+- Preparing RNA-Seq data for network construction
+
+--
+- Building a co-expression network
+
+--
+- Detecting co-expression modules
+
+--
+- Annotating a co-expression network
+
+--
+- Visualizing our network
 
 
+--
 **3. Questions/Discussion**
 
 ---
@@ -109,6 +125,45 @@ years:
 
 .center[![PPI](image/network-metabolic-small.png)]
 
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+--
+1. **Common approaches for analyzing expression data**
+
+--
+    - Differential expression analysis
+
+--
+    - Gene set enrichment analysis (GO/KEGG)
+
+--
+2. **Limitations of these approaches**
+
+--
+    - Typically limited to <span class='blue'>pairwise comparisons</span> (e.g. infected vs. uninfected)
+
+--
+    - Provides only a <span class='blue'>broad overview</span> of which genes or functions are up- and down-regulated between conditions
+
+--
+3. **Co-expression network analysis**
+
+--
+    - Uses expression data for <span class='red'>multiple conditions</span> (e.g. time-points) to infer relationships between genes.
+
+--
+    - Useful for understanding patterns in expression data at a more granular level
+
+--
+    - Can <span class='red'>detect sub-groups</span> corresponding to different expression profiles
+
+--
+    - Can be used to <span class='red'>infer function</span> of unknown gene products
+
+---
 
 ---
 # Network representation (directed)
