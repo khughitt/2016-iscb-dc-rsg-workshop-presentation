@@ -198,24 +198,6 @@ diag(adj) <- 0
 ![:vmargin -50](image/example-network-directed-trimmed.svg)
 ]
 
-???
-
-Plotting: 
-
-```r
-# generating the figure
-library(igraph)
-svg(file='example-network-directed.svg', bg='transparent')
-plot(g)
-dev.off()
-
-# inkscape command-line command used to crop whitespace:
-# inkscape --verb=FitCanvasToDrawing --verb=FileSave --verb=FileClose example-network.svg
-
-# for separate edges in each direction
-#plot(g, edge.curved=rep(0.5, ecount(g)))
-```
-
 ---
 # Network representation (undirected)
 
@@ -281,6 +263,61 @@ plot(g, edge.width=E(g)$weight)
 .right-column.vcenter[
 ![:vmargin -50](image/example-network-undirected-weighted-trimmed.svg)
 ]
+
+---
+# Co-expression analysis
+
+Let's start by simulating some "expression" data:
+- 45 genes
+- 3 clusters (high, medium, and low co-expression)
+
+```r
+genes_per_cluster <- 15
+num_timepoints <- 10
+
+nvals <- genes_per_cluster * num_timepoints
+
+# highly co-expressed cluster going from low->high expression
+cluster1 <- matrix(rep(1:num_timepoints, genes_per_cluster) + 
+                   rnorm(nvals, sd=0.25),
+                   nrow=genes_per_cluster, byrow=TRUE)
+
+# moderately co-expression cluster going from high->low expression
+cluster2 <- matrix(rep(num_timepoints:1, genes_per_cluster) + 
+                   rnorm(nvals, sd=0.75),
+                   nrow=genes_per_cluster, byrow=TRUE)
+
+# randomly expressed genes
+noise <- matrix(sample(1:2, nvals, replace=TRUE) +
+                rnorm(nvals, sd=1),
+                nrow=genes_per_cluster, byrow=TRUE)
+
+```
+
+---
+# Cluster 1 (highly co-expressed)
+
+.center[![:scale 64%](image/expression-cluster1.svg)]
+
+---
+# Cluster 2 (moderately co-expressed)
+
+.center[![:scale 64%](image/expression-cluster2.svg)]
+
+---
+# Cluster 3 (random)
+
+.center[![:scale 64%](image/expression-cluster3.svg)]
+
+---
+# Putting it all together...
+
+.center[![:scale 64%](image/expression-combined.svg)]
+
+---
+
+```r
+```
 
 ---
 class: center, middle
