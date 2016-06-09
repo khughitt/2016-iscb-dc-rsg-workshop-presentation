@@ -316,8 +316,15 @@ noise <- matrix(sample(1:2, nvals, replace=TRUE) +
 
 ---
 
-```r
-```
+# Correlation matrix (`\(S\)`)
+
+.center[![:scale 65%](image/expression-heatmap-raw.png)]
+
+---
+
+# Correlation matrix (`\(S^n\)`)
+
+.center[![:scale 65%](image/expression-heatmap-power.png)]
 
 ---
 class: center, middle

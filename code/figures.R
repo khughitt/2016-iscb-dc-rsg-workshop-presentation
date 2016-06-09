@@ -12,8 +12,10 @@
 library('knitr')
 library('igraph')
 library('ggplot2')
+library('gplots')
 library('reshape2')
 library('dplyr')
+library('RColorBrewer')
 
 set.seed(1)
 
@@ -88,17 +90,17 @@ nvals <- genes_per_cluster * num_timepoints
 
 # highly co-expressed cluster going from low->high expression
 cluster1 <- matrix(rep(1:num_timepoints, genes_per_cluster) + 
-                   rnorm(nvals, sd=0.25),
+                   rnorm(nvals, sd=0.5),
                    nrow=genes_per_cluster, byrow=TRUE)
 
 # moderately co-expression cluster going from high->low expression
 cluster2 <- matrix(rep(num_timepoints:1, genes_per_cluster) + 
-                   rnorm(nvals, sd=0.75),
+                   rnorm(nvals, sd=1.0),
                    nrow=genes_per_cluster, byrow=TRUE)
 
 # noise cluster (random expression)
 noise <- matrix(sample(1:2, nvals, replace=TRUE) +
-                rnorm(nvals, sd=1),
+                rnorm(nvals, sd=1.5),
                 nrow=genes_per_cluster, byrow=TRUE)
 
 # combined dataset
@@ -152,4 +154,47 @@ ggplot(df, aes(x=time, y=expression, group=gene, color=type)) +
     theme(plot.background=element_blank(),
           axis.text.x=element_text(angle=45, hjust=2))
 ggsave('../image/expression-combined.svg', bg='transparent')
+
+
+###############################################################################
+#
+# Figures : Correlation matrix / Hierarchical clustering dendrogram (Raw)
+#
+###############################################################################
+
+# Create correlation matrix
+cor_mat <- cor(t(expr))
+
+# Gene labels
+gene_labels <- c(rep('high',  genes_per_cluster), 
+                 rep('low',   genes_per_cluster),
+                 rep('noise', genes_per_cluster))
+gene_labels <- factor(gene_labels)
+
+gene_colors = brewer.pal(9, "Set1")[as.integer(gene_labels)]
+
+# construct heatmap
+png(file='../image/expression-heatmap-raw.png', bg='transparent', width=800, height=800)
+h <- heatmap.2(cor_mat, ColSideColors=gene_colors, RowSideColors=gene_colors,
+               margin=c(6, 6), revC=TRUE, xlab='Gene', ylab='Gene', trace='none',
+               main="Correlation Matrix (Raw)")
+dev.off()
+
+###############################################################################
+#
+# Figure : Correlation matrix / Hierarchical clustering dendrogram
+#          (power-transformation)
+#
+###############################################################################
+
+# Shift from [-1,1] to [0,1] and raise to a power
+pow_mat <- ((cor_mat + 1) / 2)**6
+
+png(file='../image/expression-heatmap-power.png', bg='transparent', width=800, height=800)
+heatmap.2(pow_mat, ColSideColors=gene_colors, RowSideColors=gene_colors,
+          Rowv=h$rowInd, Colv=h$colInd,
+          margin=c(6, 6), revC=TRUE, xlab='Gene', ylab='Gene', trace='none',
+          main="Correlation Matrix (Power-transformed)")
+dev.off()
+
 
