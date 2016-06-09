@@ -8,8 +8,6 @@ background-image: url(image/intro_background.png)
 ##### June 15, 2016
 
 ---
-class: smaller
-
 # Outline
 
 --
@@ -22,13 +20,16 @@ class: smaller
 - Motivation for using co-expression networks
 
 --
-- Approaches for co-expression network inference
+- Network inference and reverse engineering
 
 --
 - Basic graph terminology and data structures
 
 --
 - Steps for building a co-expression network
+
+--
+- Optimizing parameters for network construction
 
 --
 - Dataset for today's workshop
@@ -51,10 +52,6 @@ class: smaller
 
 --
 - Visualizing our network
-
-
---
-**3. Questions/Discussion**
 
 ---
 # Types of Biological Networks
@@ -85,7 +82,6 @@ years:
 
 ### Co-expression Network
 <br /><br /><br />
-
 
 .center[![co-expression network](image/network-coex-small.png)]
 
@@ -165,8 +161,51 @@ class: smaller
 
 ---
 
+# Network inference and reverse engineering
+
+.left-column[
+
+<h3 style='margin-top: 0px'>Co-expression network analysis</h3>
+
+- Uses expression data only
+- Infers <span class='blue'>_co-expression relationships_</span> between genes
+- <span class='red'>Undirected network</span>
+- Examples:
+    - Relevance networks (Butte & Kohane, 2000)
+    - WGCNA: Weighted Gene Co-expression Network Analysis (Zhang & Horvath, 2005)
+
+]
+
+.right-column.vcenter[
+.hue-180[![:vmargin 50](image/example-network-undirected-trimmed.svg)]
+]
+
+---
+# Network inference and reverse engineering
+
+.left-column[
+
+<h3 style='margin-top: 0px'>Network inference / Reverse Engineering</h3>
+
+- Uses expression data and possibly other sources of information: known TFs,
+  ChIP-ChIP or ChIP-Seq, time, etc.
+- Infers <span class='blue'>_causal_</span> relationships in the data
+- <span class='red'>Directed network</span class='red'>
+- May be referred to as _network inference_ or _reverse engineering_ methods:
+  We are using the _observed_ expression data to _infer_ the underlying
+  GRN which generated the observations.
+- Examples: ARACNe, DISTILLER, cMonkey
+
+]
+
+.right-column.vcenter[
+.hue-270[![:vmargin 75](image/example-network-directed-trimmed.svg)]
+]
+
 ---
 # Network representation (directed)
+
+A network with `\(n\)` vertices can be represented by an `\(n \times n\)` matrix:
 
 ```r
 set.seed(1)
@@ -195,7 +234,7 @@ diag(adj) <- 0
 ]
 
 .right-column.vcenter[
-![:vmargin -50](image/example-network-directed-trimmed.svg)
+![:vmargin -125](image/example-network-directed-trimmed.svg)
 ]
 
 ---
@@ -228,7 +267,7 @@ plot(g)
 ]
 
 .right-column.vcenter[
-![:vmargin -50](image/example-network-undirected-trimmed.svg)
+![:vmargin -85](image/example-network-undirected-trimmed.svg)
 ]
 
 ---
@@ -261,15 +300,91 @@ plot(g, edge.width=E(g)$weight)
 ]
 
 .right-column.vcenter[
-![:vmargin -50](image/example-network-undirected-weighted-trimmed.svg)
+![:vmargin -85](image/example-network-undirected-weighted-trimmed.svg)
 ]
 
 ---
+# Co-expression network construction
+
+The major steps involved in building a co-expression network include:
+
+1. Data pre-processing
+2. Similarity matrix construction
+3. Adjacency matrix construction
+4. Network module detection
+
+---
+# 1. Pre-process data
+
+--
+- Select samples of interest
+
+--
+    - All samples
+
+--
+    - Samples related to phenomena of interest
+--
+- Filter low count genes
+
+--
+- Filter low-variance / non-DE genes
+
+--
+    - Limiting analysis to differentially expressed genes can lead to a more
+      robust network.
+
+--
+- Log2-CPM
+
+--
+- Normalization
+
+---
+
+--
+2. Construct a similarity matrix
+
+--
+    - Similarity measures:
+
+--
+        - Pearson correlation
+
+--
+        - Spearman correlation
+
+--
+        - Bi-weight Midcorrelation
+
+--
+        - Euclidean distance
+
+--
+        - Mutual information
+
+--
+        - etc.
+
+---
+
+# Co-expression network construction
+
+The major steps involved in building a co-expression network include:
+
+3. Transform simlarity matrix
+    - Preserve sign of correlation?
+        - Unsigned: `\(|cor|\)`
+        - Signed: `\(\frac{cor + 1}{2}\)` 
+
+---
+class: smaller-code
+
 # Co-expression analysis
 
 Let's start by simulating some "expression" data:
-- 45 genes
-- 3 clusters (high, medium, and low co-expression)
+- **45 genes**
+- **3 clusters** (high, medium, and low co-expression)
 
 ```r
 genes_per_cluster <- 15
