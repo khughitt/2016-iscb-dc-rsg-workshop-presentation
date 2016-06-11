@@ -15,6 +15,7 @@ library('ggplot2')
 library('gplots')
 library('reshape2')
 library('dplyr')
+library('dendextend')
 library('RColorBrewer')
 
 set.seed(1)
@@ -164,6 +165,7 @@ ggsave('../image/expression-combined.svg', bg='transparent')
 
 # Create correlation matrix
 cor_mat <- cor(t(expr))
+adj_mat <- (cor_mat + 1) / 2
 
 # Gene labels
 gene_labels <- c(rep('high',  genes_per_cluster), 
@@ -188,7 +190,7 @@ dev.off()
 ###############################################################################
 
 # Shift from [-1,1] to [0,1] and raise to a power
-pow_mat <- ((cor_mat + 1) / 2)**6
+pow_mat <- adj_mat**6
 
 png(file='../image/expression-heatmap-power.png', bg='transparent', width=800, height=800)
 heatmap.2(pow_mat, ColSideColors=gene_colors, RowSideColors=gene_colors,
@@ -197,4 +199,48 @@ heatmap.2(pow_mat, ColSideColors=gene_colors, RowSideColors=gene_colors,
           main="Correlation Matrix (Power-transformed)")
 dev.off()
 
+###############################################################################
+#
+# Figures : Hierarchical clustering
+#
+###############################################################################
+
+dissim_mat1 <- 1 - adj_mat
+dissim_mat2 <- 1 - pow_mat
+
+# label colors 
+label_colors <- rep(c('#585fa1', '#a15860', '#60a158'),
+                    each=genes_per_cluster)
+
+# dendrogram based on raw (shifted) correlation matrix
+dend1 <- dissim_mat1 %>% as.dist %>% hclust %>% as.dendrogram %>%
+    set('labels_cex', 0.8)
+dend1 <- dend1 %>% set('labels_col', label_colors[order.dendrogram(dend1)])
+
+# hclust alone
+svg(file='../image/hclust-raw.svg', bg='transparent', height=3.5)
+plot(dend1)
+dev.off()
+
+# same thing but with cutoff and clusters displayed
+clusters = cutree(dend1, h=0.65)
+
+svg(file='../image/hclust-raw-clusters.svg', bg='transparent', height=3.5)
+plot(dend1, xlab="", sub="")
+colored_bars(colors=clusters, dend=dend1, rowLabels='module')
+abline(h=0.65, col='red', lty=2)
+dev.off()
+
+# dendrogram based on power-transformed (shifted) correlation matrix
+dend2 <- dissim_mat2 %>% as.dist %>% hclust %>% as.dendrogram %>%
+    set('labels_cex', 0.8)
+dend2 <- dend2 %>% set('labels_col', label_colors[order.dendrogram(dend2)])
+
+clusters = cutree(dend2, h=0.65)
+
+svg(file='../image/hclust-power-transformed.svg', bg='transparent', height=3.5)
+plot(dend2, xlab="", sub="")
+colored_bars(colors=clusters, dend=dend2, rowLabels='module')
+abline(h=0.65, col='red', lty=2)
+dev.off()
 

@@ -7,6 +7,14 @@ background-image: url(image/intro_background.png)
 #### V. Keith Hughitt
 ##### June 15, 2016
 
+<!--
+TODO:
+
+1) Shorten outline list?
+2) Fix jitter in animations?
+
+-->
+
 ---
 # Outline
 
@@ -91,11 +99,11 @@ years:
 Biological networks have been used to study a range of processes in recent
 years:
 
-### Gene-regulatory Network (GRN)
+### Transcriptional-regulatory Network (TRN)
 <br /><br /><br />
 
 
-.center[![GRN](image/network-grn-small.png)]
+.center[![TRN](image/network-trn-small.png)]
 
 ---
 # Types of Biological Networks
@@ -103,11 +111,11 @@ years:
 Biological networks have been used to study a range of processes in recent
 years:
 
-### Transcriptional-regulatory Network (TRN)
+### Gene-regulatory Network (GRN)
 <br /><br /><br />
 
 
-.center[![TRN](image/network-trn-small.png)]
+.center[![GRN](image/network-grn-small.png)]
 
 ---
 # Types of Biological Networks
@@ -307,79 +315,104 @@ plot(g, edge.width=E(g)$weight)
 # Co-expression network construction
 
 The major steps involved in building a co-expression network include:
+--
 
 1. Data pre-processing
-2. Similarity matrix construction
-3. Adjacency matrix construction
-4. Network module detection
+--
+
+2. Adjacency matrix construction
+--
+
+3. Network module detection
 
 ---
-# 1. Pre-process data
-
+# Data pre-processing
 --
+
 - Select samples of interest
-
 --
+
     - All samples
-
 --
+
     - Samples related to phenomena of interest
 --
+
 - Filter low count genes
-
 --
+
 - Filter low-variance / non-DE genes
-
 --
+
     - Limiting analysis to differentially expressed genes can lead to a more
       robust network.
-
 --
+
 - Log2-CPM
-
 --
+
 - Normalization
 
 ---
 
---
-2. Construct a similarity matrix
+# Adjacency matrix construction
 
---
-    - Similarity measures:
+First, we need to select a similarity measure to use when comparing gene
+expression profiles.
 
---
-        - Pearson correlation
+.left-column[
+####Similarity measures
 
---
-        - Spearman correlation
+- Pearson correlation
+- Spearman correlation
+- Bi-weight Midcorrelation
+- Euclidean distance
+- Mutual information
+- etc.
+]
 
---
-        - Bi-weight Midcorrelation
-
---
-        - Euclidean distance
-
---
-        - Mutual information
-
---
-        - etc.
+.right-column[
+![](image/Spearman_fig1_wikipedia.svg)
+.center[(source: [Wikipedia](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient#/media/File:Spearman_fig1.svg))]
+]
 
 ---
 
-# Co-expression network construction
+# Adjacency matrix construction
 
-The major steps involved in building a co-expression network include:
+Once we have generated our similarity matrix, it is often useful to transform
+it in one or more ways.
 
-3. Transform simlarity matrix
-    - Preserve sign of correlation?
-        - Unsigned: `\(|cor|\)`
-        - Signed: `\(\frac{cor + 1}{2}\)` 
+--
+#### Dealing with sign of correlations
+
+--
+- Unsigned: <span class='blue'>`\(|cor|\)`</span>
+
+--
+    - Gene pairs with positive and inverse correlations are grouped
+        together.
+
+--
+- Signed: <span class='blue'>`\(\frac{cor + 1}{2}\)` </span>
+
+--
+    - Only genes with positive correlation grouped together
+
+--
+    - Information about negative correlations 
+        
+
+--
+#### Eliminating spurious correlations
+
+--
+- Sigmoid transformation: <span class='blue'>`\(\frac{1}{1 + e^-x}\)`</span>
+
+--
+- Power transformation: <span class='blue'>`\(x^n\)`</span>
 
 ---
-class: smaller-code
-
 # Co-expression analysis
 
 Let's start by simulating some "expression" data:
@@ -388,41 +421,46 @@ Let's start by simulating some "expression" data:
 
 ```r
 genes_per_cluster <- 15
-num_timepoints <- 10
+num_times <- 10
 
-nvals <- genes_per_cluster * num_timepoints
-
-# highly co-expressed cluster going from low->high expression
-cluster1 <- matrix(rep(1:num_timepoints, genes_per_cluster) + 
-                   rnorm(nvals, sd=0.25),
-                   nrow=genes_per_cluster, byrow=TRUE)
-
-# moderately co-expression cluster going from high->low expression
-cluster2 <- matrix(rep(num_timepoints:1, genes_per_cluster) + 
-                   rnorm(nvals, sd=0.75),
-                   nrow=genes_per_cluster, byrow=TRUE)
-
-# randomly expressed genes
-noise <- matrix(sample(1:2, nvals, replace=TRUE) +
-                rnorm(nvals, sd=1),
-                nrow=genes_per_cluster, byrow=TRUE)
-
+nvals <- genes_per_cluster * num_times
 ```
 
 ---
 # Cluster 1 (highly co-expressed)
 
-.center[![:scale 64%](image/expression-cluster1.svg)]
+.center[![:scale 48%](image/expression-cluster1.svg)]
+
+```r
+# highly co-expressed cluster; low->high expression
+cluster1 <- matrix(rep(1:num_times, genes_per_cluster) + 
+                   rnorm(nvals, sd=0.25),
+                   nrow=genes_per_cluster, byrow=TRUE)
+```
 
 ---
 # Cluster 2 (moderately co-expressed)
 
-.center[![:scale 64%](image/expression-cluster2.svg)]
+.center[![:scale 48%](image/expression-cluster2.svg)]
+
+```r
+# moderately co-expressed cluster; high->low expression
+cluster2 <- matrix(rep(num_times:1, genes_per_cluster) + 
+                   rnorm(nvals, sd=0.75),
+                   nrow=genes_per_cluster, byrow=TRUE)
+```
 
 ---
 # Cluster 3 (random)
 
-.center[![:scale 64%](image/expression-cluster3.svg)]
+.center[![:scale 48%](image/expression-cluster3.svg)]
+
+```r
+# randomly expressed genes
+noise <- matrix(sample(1:2, nvals, replace=TRUE) +
+                rnorm(nvals, sd=1),
+                nrow=genes_per_cluster, byrow=TRUE)
+```
 
 ---
 # Putting it all together...
@@ -430,16 +468,58 @@ noise <- matrix(sample(1:2, nvals, replace=TRUE) +
 .center[![:scale 64%](image/expression-combined.svg)]
 
 ---
-
 # Correlation matrix (`\(S\)`)
+
+Correlation matrix.
 
 .center[![:scale 65%](image/expression-heatmap-raw.png)]
 
 ---
-
 # Correlation matrix (`\(S^n\)`)
 
+After power transformation.
+
 .center[![:scale 65%](image/expression-heatmap-power.png)]
+
+---
+# Module detection using Hierarchical Clustering
+
+Genes are grouped together based on the similarity of their expression
+profiles.
+
+.center[![:scale 75%](image/hclust-raw.svg)]
+
+```r
+dissim_mat <- as.dist(1 - adj_mat)
+dend <- as.dendrogram(hclust(dissim_mat))
+```
+
+---
+# Module detection using Hierarchical Clustering
+
+Modules are assigned by "cutting" the tree at a specified height: branches
+below the cut height become separate modules.
+
+.center[![:scale 75%](image/hclust-raw-clusters.svg)]
+
+```r
+cutree(dend, h=0.65)
+```
+
+---
+class: smaller-code
+
+# Module detection using Hierarchical Clustering
+
+Same thing as before, but this time using the power-transformed correlation matrix.
+
+.center[![:scale 75%](image/hclust-power-transformed.svg)]
+
+```r
+dissim_mat <- as.dist(1 - pow_mat)
+dend <- as.dendrogram(hclust(dissim_mat))
+cutree(dend, h=0.65)
+```
 
 ---
 class: center, middle
