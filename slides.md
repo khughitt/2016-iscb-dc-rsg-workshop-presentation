@@ -135,6 +135,93 @@ class: smaller
 # What are co-expression networks useful for?
 
 --
+<span style='font-size:24px;'>Suppose we have a cell...</span>
+
+.center[![](image/raw/cell-1.svg)]
+
+--
+.center[(Yes... that is a cell...)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+<span style='font-size:24px;'>Now suppose that cell encounters some stimulus...</span>
+
+.center[![](image/raw/cell-2.svg)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+<span style='font-size:24px;'>In response, some pathways may become activated...</span>
+
+--
+
+.center[![](image/raw/cell-3.svg)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+<span style='font-size:24px;'>...Or deactivated.</span>
+
+.center[![](image/raw/cell-4.svg)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+<span style='font-size:24px;'>Now, suppose the cell encounters a different stimulus</span>
+
+--
+
+.center[![](image/raw/cell-5.svg)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+<span style='font-size:24px;'>Its response may differ as well...</span>
+
+.center[![](image/raw/cell-6.svg)]
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+- <span style='font-size:24px;'>The <span class='blue'>transcriptional
+response</span> we see is dictated by an underlying <span class='blue'>gene
+regulatory network (GRN)</span>.</span>
+- <span style='font-size:24px;'>Co-expression network analysis provides us
+  with insights into the underlying network, and into the groups of genes whose
+  expression levels are <span class='red'>co-regulated</span>.</span>
+
+<br /><br />
+
+<div class='left-column vcenter' style='width:35%;'>
+<img src='image/raw/cell-7.svg'></img>
+</div>
+
+<div class='right-column vcenter' style='width:59%;'>
+<img src='image/640px-Gene_Regulatory_Network_for_Initiation_of_Sporulation_in_Bacillus_subtilis.png'></img>
+</div>
+
+<br />
+<p style='color: #666;'><i>Bacillis subtilis</i> sporulation GRN (Source: <a href='https://commons.wikimedia.org/wiki/File:Gene_Regulatory_Network_for_Initiation_of_Sporulation_in_Bacillus_subtilis.png'>Wikipedia</a>)</p>
+
+---
+class: smaller
+
+# What are co-expression networks useful for?
+
+--
 1. **Common approaches for analyzing expression data**
 
 --
