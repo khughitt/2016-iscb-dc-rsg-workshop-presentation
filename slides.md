@@ -609,6 +609,23 @@ cutree(dend, h=0.65)
 ```
 
 ---
+## Choosing the best parameters for your co-expression network
+
+.center[![:scale 55%](image/hslm_v5.1_sim_meas_opt.png)]
+
+---
+## Choosing the best parameters for your co-expression network
+
+.center[![:scale 55%](image/param_opt_predictions_v5.0.png)]
+
+---
+## Choosing the best parameters for your co-expression network
+
+.center[![](image/param_opt_predictions_v5.0-zoomed.png)]
+
+---
+
+---
 class: center, middle
 
 ## Thank you!
