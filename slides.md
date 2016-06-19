@@ -62,6 +62,17 @@ TODO:
 - Visualizing our network
 
 ---
+# Tutorial
+
+The tutorial that goes with this presentation can be found at:
+
+<br /><br />
+
+.center[
+[https://github.com/iscb-dc-rsg/2016-summer-workshop](https://github.com/iscb-dc-rsg/2016-summer-workshop/tree/master/3B-Hughitt-RNASeq-Coex-Network-Analysis)
+]
+
+---
 # Types of Biological Networks
 
 Biological networks have been used to study a range of processes in recent
