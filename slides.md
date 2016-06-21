@@ -585,7 +585,7 @@ After power transformation.
 Genes are grouped together based on the similarity of their expression
 profiles.
 
-.center[![:scale 75%](image/hclust-raw.svg)]
+.center[![](image/hclust-raw.svg)]
 
 ```r
 dissim_mat <- as.dist(1 - adj_mat)
@@ -598,7 +598,7 @@ dend <- as.dendrogram(hclust(dissim_mat))
 Modules are assigned by "cutting" the tree at a specified height: branches
 below the cut height become separate modules.
 
-.center[![:scale 75%](image/hclust-raw-clusters.svg)]
+.center[![](image/hclust-raw-clusters.svg)]
 
 ```r
 cutree(dend, h=0.65)
@@ -611,7 +611,7 @@ class: smaller-code
 
 Same thing as before, but this time using the power-transformed correlation matrix.
 
-.center[![:scale 75%](image/hclust-power-transformed.svg)]
+.center[![](image/hclust-power-transformed.svg)]
 
 ```r
 dissim_mat <- as.dist(1 - pow_mat)
